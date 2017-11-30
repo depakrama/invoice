@@ -1,0 +1,54 @@
+#%RAML 2.0
+---
+title: API Exposed to get the tax rates
+version: v1.0
+baseUri: http://localhost:8081/api
+documentation:
+  - title: Functionality to get the  tax rates of the products
+    content: |
+      This API is provided to get the tax rates of the product
+
+/taxrates:
+  displayName: get the tax rates of the products
+  post:
+    description: |
+      get the tax rates of the products 
+    body:
+      application/json:
+       example: |
+        {
+         "Products": [
+            {
+               "name": "TV"
+            },
+            {
+              "name": "BroadBand"
+            }
+          ]
+             
+        }
+    responses:
+      200:
+        body:
+          application/json:
+           example: |
+            {
+             "Products": [
+                {
+                   "name": "TV",
+                   "tax": "2.0%"
+                },
+                {
+                   "name": "BroadBand"
+                   "tax": "2.5%"
+                 },
+                 {
+                   "name": "HomePhone"
+                   "tax": "0.0%"
+                 }
+               ]
+             }
+      400:
+        description: |
+          The payload was badly formed.
+  

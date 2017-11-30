@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"  xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <sub-flow name="sf_post_gettax">
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+         <set-payload value="#[payload]" doc:name="Set Payload"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="bf964949-d730-4a56-844c-61eb123b56c9">
+            <dw:input-payload doc:sample="sample_data\json.json" mimeType="application/json"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%input payload application/json
+%output application/json
+---
+{
+	 (payload.Products map ((product , indexOfProduct) -> {
+		name: product.name,
+		(tax: "2.0%") when product.name == 'TV',
+		(tax: "2.5%") when product.name == 'BroadBand',
+		(tax: "0.0%") when product.name == 'HomePhone'
+	}))
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+
+    </sub-flow>
+</mule>

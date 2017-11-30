@@ -1,0 +1,17 @@
+ {
+         "Products": [
+            {
+               "name": "TV",
+               "desc": "Foxtel TV connection"
+              
+            },
+            {
+              "name": "BroadBand",
+              "desc": "Foxtel BroadBand connection",
+              "type": "A"
+            }
+          ],
+            "Account Number": "1234AS",
+            "Order Number": "S12121",
+            "CustomerType": "Employee"
+        }

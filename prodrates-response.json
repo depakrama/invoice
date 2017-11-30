@@ -1,0 +1,15 @@
+{
+             "Products": [
+                {
+                   "name": "TV",
+                   "desc": "Foxtel TV connection",
+                   "rate": 10.20
+                },
+                {
+                   "name": "BroadBand",
+                   "desc": "Foxtel BroadBand connection",
+                   "type": "A",
+                   "rate": 0.00
+                 }
+               ]
+             }

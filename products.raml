@@ -1,0 +1,58 @@
+#%RAML 2.0
+---
+title: API Exposed for products
+version: v1.0
+baseUri: http://localhost:8081/api
+documentation:
+  - title: Functionality to get the rates of the products
+    content: |
+      This API is provided to get the rates of the product
+
+/products:
+  displayName: get the rates of the products
+  post:
+    description: |
+      get the rates of the products 
+    body:
+      application/json:
+       example: |
+        {
+         "Products": [
+            {
+               "name": "TV",
+               "desc": "Foxtel TV connection"
+              
+            },
+            {
+              "name": "BroadBand",
+              "desc": "Foxtel BroadBand connection",
+              "type": "A"
+            }
+          ],
+            "CustomerType": "Employee"
+             
+        }
+    responses:
+      200:
+        body:
+          application/json:
+           example: |
+            {
+             "Products": [
+                {
+                   "name": "TV",
+                   "desc": "Foxtel TV connection",
+                   "rate": 10.20
+                },
+                {
+                   "name": "BroadBand",
+                   "desc": "Foxtel BroadBand connection",
+                   "type": "A",
+                   "rate": 0.00
+                 }
+               ]
+             }
+      400:
+        description: |
+          The payload was badly formed.
+  

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd">
+    <http:listener-config xmlns:http="http://www.mulesoft.org/schema/mule/http" name="invoice-httpListenerConfig" host="0.0.0.0" port="7777" doc:name="HTTP Listener Configuration"/>
+    <apikit:config xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" name="invoice-config" raml="invoice.raml" consoleEnabled="false" doc:name="Router" keepRamlBaseUri="false"/>
+    <flow name="invoice-main">
+        <http:listener xmlns:http="http://www.mulesoft.org/schema/mule/http" config-ref="invoice-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
+       <apikit:router config-ref="invoice-config" doc:name="APIkit Router"/>
+        
+    </flow>
+    
+     <flow name="post:/invoice:invoice-config">
+        <flow-ref name="sf_post_getinvoice" doc:name="sf_post_getinvoice" />
+    </flow>
+    
+    
+</mule>

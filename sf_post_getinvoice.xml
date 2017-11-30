@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <sub-flow name="sf_post_getinvoice">
+       
+        <set-payload value="#[payload]" doc:name="Set Payload"/>
+         <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="4e3f78ff-1a83-400e-93be-e6a6c7eed1e9">
+        <dw:input-payload doc:sample="sample_data\products.json" mimeType="application/json"/>
+            
+            <dw:set-payload><![CDATA[%dw 1.0
+%input payload application/json
+%output application/json
+---
+{
+	"Products": 
+	(payload.Products map ((product , indexOfProduct) -> {
+		name: product.name,
+		desc: product.desc,
+		(rate: 10.00) when product.name == 'TV',
+		(rate: 12.00) when product.name == 'BroadBand' and (payload.CustomerType =='Resident' or payload.CustomerType == 'Vip') and (product.type =='A'),
+		(rate: 15.00) when product.name == 'BroadBand' and payload.CustomerType =='Employee' and (product.type =='B' or product.type =='C'),
+		(rate: 0.00) when product.name == 'BroadBand' and payload.CustomerType =='Employee' and (product.type =='A'),
+		(rate: 0.00) when product.name == 'HomePhone' and payload.CustomerType =='Vip',
+		(rate: 12.00) when product.name == 'HomePhone' and (payload.CustomerType =='Employee' or payload.CustomerType =='Resident'),
+		(tax: "2.0%") when product.name == 'TV',
+		(tax: "2.5%") when product.name == 'BroadBand',
+		(tax: "0.0%") when product.name == 'HomePhone',
+		type: product.type
+	})),
+	"Account Number" : payload."Account Number",
+	"Order Number": payload."Order Number",
+	"CustomerType": payload.CustomerType
+}]]></dw:set-payload>
+        </dw:transform-message>
+         <custom-transformer class="com.au.invoice.transformer.GetInvoiceTransformer" doc:name="Java"/>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+
+
+    </sub-flow>
+</mule>
